@@ -5,24 +5,31 @@ dotenv.config();
 module.exports = () => (req, res, next) => {
   if (!req.dbconnection) {
     const pool = new Pool({
-      user: process.env.HOST,
-      host: process.env.USER,
-      database: process.env.PASSWORD,
-      password: process.env.DB,
+      host: process.env.HOST,
       port: process.env.PORT,
+      user: process.env.USER,
+      password: process.env.PASSWORD,
+      database: process.env.DB,
       schema: process.env.SCHEMA,
     });
     console.log(pool);
     pool
       .connect()
       .then(() => {
-        console.log('Conectado com sucesso ao banco.');
+        console.log('pool => conectado');
+        req.dbconnection = pool;
         next();
       })
       .catch((err) => {
-        console.log(err);
-        next();
+        console.error('connection error', err.stack);
+        next(err);
       });
+
+    res.on('finish', () => {
+      console.info('pool => devolvendo conexão para o pool');
+      req.dbconnection.end();
+      req.dbconnection = null;
+    });
   } else {
     next();
   }
