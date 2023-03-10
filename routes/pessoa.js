@@ -1,4 +1,4 @@
-exports.list = function (req, res) {
+const list = (req, res) => {
   req.dbconnection.query('SELECT * FROM pessoa', function (err, result) {
     if (err) {
       console.log(err);
@@ -8,6 +8,10 @@ exports.list = function (req, res) {
       res.send(result.rows);
     }
   });
+};
+
+module.exports = {
+  list,
 };
 
 // exports.add = function (req, res) {

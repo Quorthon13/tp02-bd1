@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const connectionMiddleware = require('./middleware/connection-middleware');
 
-var employees = require('./routes/employees');
+var pessoa = require('./routes/pessoa');
 // var routes = require('./routes');
 var app = express();
 
@@ -19,12 +19,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(connectionMiddleware());
 
 // app.get('/', routes.index);
-app.get('/employees', employees.list);
-// app.get('/employees/add', employees.add);
-// app.post('/employees/add', employees.save);
-// app.get('/employees/delete/:id', employees.delete);
-// app.get('/employees/edit/:id', employees.edit);
-// app.post('/employees/edit/:id', employees.update);
+app.get('/pessoa', pessoa.list);
+// app.get('/pessoa/add', pessoa.add);
+// app.post('/pessoa/add', pessoa.save);
+// app.get('/pessoa/delete/:id', pessoa.delete);
+// app.get('/pessoa/edit/:id', pessoa.edit);
+// app.post('/pessoa/edit/:id', pessoa.update);
 
 app.listen(4000, function () {
   console.log('Server is running.. on Port 4000');
