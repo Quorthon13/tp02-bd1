@@ -10,7 +10,7 @@ const list = (req, res) => {
 };
 
 const add = (req, res) => {
-  const { nome, cpf, rg, telefone, rua, bairro, numero, cep, estado, cidade, pais } = {
+  const {nome, cpf, rg, telefone, rua, bairro, numero, cep, estado, cidade, pais} = {
     nome: 'teste',
     cpf: 'teste',
     rg: 'teste',
@@ -34,8 +34,23 @@ const add = (req, res) => {
   });
 };
 
+const remove = (req, res) => {
+  const {codigo} = {
+    codigo: req.params.id
+  }
+
+  req.dbconnection.query('DELETE FROM pessoa WHERE codigo = $1', [codigo], function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err);
+    } else {
+      res.send(result.rows);
+    }
+  });
+};
+
 module.exports = {
-  list, add
+  list, add, remove
 };
 
 // exports.add = function (req, res) {

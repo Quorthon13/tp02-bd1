@@ -22,7 +22,7 @@ app.use(connectionMiddleware());
 app.get('/pessoa', pessoa.list);
 app.get('/pessoa/add', pessoa.add);
 // app.post('/pessoa/add', pessoa.save);
-// app.get('/pessoa/delete/:id', pessoa.delete);
+app.get('/pessoa/remove/:id', pessoa.remove);
 // app.get('/pessoa/edit/:id', pessoa.edit);
 
 app.listen(4000, function () {
