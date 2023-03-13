@@ -12,7 +12,6 @@ module.exports = () => (req, res, next) => {
       database: process.env.DB,
       schema: process.env.SCHEMA,
     });
-    console.log(pool);
     pool
       .connect()
       .then(() => {

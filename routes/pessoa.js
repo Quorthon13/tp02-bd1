@@ -1,56 +1,150 @@
+const find = async (req, res) => {
+  const resultado = await findById(req, req.params.id);
+  if (resultado == null) {
+    res.status(400).send({ dados: null, msgErro: 'Registro não encontrado.' });
+  } else {
+    res.send({ dados: resultado, msgErro: null });
+  }
+};
+
+const findById = async (req, id) => {
+  const { codigo } = {
+    codigo: id,
+  };
+
+  try {
+    const resultado = await req.dbconnection.query(
+      'SELECT * FROM pessoa WHERE codigo = $1',
+      [codigo]
+    );
+    return resultado.rows.length == 0 ? null : resultado.rows[0];
+  } catch (e) {
+    return null;
+  }
+};
+
 const list = (req, res) => {
-  req.dbconnection.query('SELECT nome FROM pessoa', function (err, result) {
+  req.dbconnection.query('SELECT * FROM pessoa', function (err, result) {
     if (err) {
-      console.log(err);
-      res.status(400).send(err);
+      res.status(400).send({ dados: null, msgErro: 'Erro não identificado.' });
     } else {
-      res.send(result.rows);
+      res.send({ dados: result.rows, msgErro: null });
     }
   });
 };
 
 const add = (req, res) => {
-  const {nome, cpf, rg, telefone, rua, bairro, numero, cep, estado, cidade, pais} = {
-    nome: 'teste',
-    cpf: 'teste',
-    rg: 'teste',
-    telefone: 'teste',
-    rua: 'teste',
-    bairro: 'teste',
-    numero: 'tes',
-    cep: 'teste',
-    estado: 'te',
-    cidade: 'teste',
-    pais: 'teste',
-  }
-
-  req.dbconnection.query('INSERT INTO pessoa (nome, cpf, rg, telefone, rua, bairro, numero, cep, estado, cidade, pais) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)', [nome, cpf, rg, telefone, rua, bairro, numero, cep, estado, cidade, pais], function (err, result) {
-    if (err) {
-      console.log(err);
-      res.status(400).send(err);
-    } else {
-      res.send(result.rows);
+  const {
+    nome,
+    cpf,
+    rg,
+    telefone,
+    rua,
+    bairro,
+    numero,
+    cep,
+    estado,
+    cidade,
+    pais,
+  } = {
+    ...req.body,
+  };
+  req.dbconnection.query(
+    'INSERT INTO pessoa (nome, cpf, rg, telefone, rua, bairro, numero, cep, estado, cidade, pais) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)',
+    [nome, cpf, rg, telefone, rua, bairro, numero, cep, estado, cidade, pais],
+    function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send(err);
+      } else {
+        res.send(result.rows);
+      }
     }
-  });
+  );
 };
 
-const remove = (req, res) => {
-  const {codigo} = {
-    codigo: req.params.id
+const remove = async (req, res) => {
+  const { codigo } = {
+    codigo: req.params.id,
+  };
+  const find = await findById(req, res);
+  if (find == null) {
+    res.status(400).send({ dados: null, msgErro: 'Registro não encontrado.' });
+  } else {
+    req.dbconnection.query(
+      'DELETE FROM pessoa WHERE codigo = $1',
+      [codigo],
+      function (err) {
+        if (err) {
+          console.log(err);
+          res.status(400).send(err);
+        } else {
+          res.send({ dados: true, msgErro: null });
+        }
+      }
+    );
+  }
+};
+
+const update = async (req, res) => {
+  const {
+    codigo,
+    nome,
+    cpf,
+    rg,
+    telefone,
+    rua,
+    bairro,
+    numero,
+    cep,
+    estado,
+    cidade,
+    pais,
+  } = {
+    ...req.body,
+  };
+
+  const find = await findById(req, codigo);
+  if (find == null) {
+    res.status(400).send({ dados: null, msgErro: 'Registro não encontrado.' });
   }
 
-  req.dbconnection.query('DELETE FROM pessoa WHERE codigo = $1', [codigo], function (err, result) {
-    if (err) {
-      console.log(err);
-      res.status(400).send(err);
-    } else {
-      res.send(result.rows);
+  req.dbconnection.query(
+    `UPDATE public.pessoa
+    SET nome=$2, cpf=$3, rg=$4, telefone=$5, rua=$6, bairro=$7, numero=$8, cep=$9, estado=$10, cidade=$11, pais=$12
+    WHERE codigo=$1
+    `,
+    [
+      codigo,
+      nome,
+      cpf,
+      rg,
+      telefone,
+      rua,
+      bairro,
+      numero,
+      cep,
+      estado,
+      cidade,
+      pais,
+    ],
+    function (err, result) {
+      if (err) {
+        console.log(err);
+        res.status(400).send(err);
+      } else {
+        res.send(result.rows);
+      }
     }
-  });
+  );
 };
 
 module.exports = {
-  list, add, remove
+  list,
+  add,
+  remove,
+  find,
+  update,
 };
 
 // exports.add = function (req, res) {

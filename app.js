@@ -4,7 +4,9 @@ const path = require('path');
 const connectionMiddleware = require('./middleware/connection-middleware');
 
 var pessoa = require('./routes/pessoa');
-// var routes = require('./routes');
+var setor = require('./routes/setor');
+var funcionario = require('./routes/funcionario');
+
 var app = express();
 
 app.set('port', process.env.PORT || 4000);
@@ -18,12 +20,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(connectionMiddleware());
 
-// app.get('/', routes.index);
 app.get('/pessoa', pessoa.list);
-app.get('/pessoa/add', pessoa.add);
-// app.post('/pessoa/add', pessoa.save);
+app.post('/pessoa/add', pessoa.add);
+app.post('/pessoa/update', pessoa.update);
+app.get('/pessoa/:id', pessoa.find);
 app.get('/pessoa/remove/:id', pessoa.remove);
-// app.get('/pessoa/edit/:id', pessoa.edit);
+
+app.get('/setor', setor.list);
+app.get('/setor/:id', setor.find);
+
+app.get('/funcionario', funcionario.list);
+app.get('/funcionario/:id', funcionario.find);
 
 app.listen(4000, function () {
   console.log('Server is running.. on Port 4000');
