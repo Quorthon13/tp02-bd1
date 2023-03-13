@@ -20,11 +20,10 @@ app.use(connectionMiddleware());
 
 // app.get('/', routes.index);
 app.get('/pessoa', pessoa.list);
-// app.get('/pessoa/add', pessoa.add);
+app.get('/pessoa/add', pessoa.add);
 // app.post('/pessoa/add', pessoa.save);
 // app.get('/pessoa/delete/:id', pessoa.delete);
 // app.get('/pessoa/edit/:id', pessoa.edit);
-// app.post('/pessoa/edit/:id', pessoa.update);
 
 app.listen(4000, function () {
   console.log('Server is running.. on Port 4000');

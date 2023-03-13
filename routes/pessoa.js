@@ -1,17 +1,41 @@
 const list = (req, res) => {
-  req.dbconnection.query('SELECT * FROM pessoa', function (err, result) {
+  req.dbconnection.query('SELECT nome FROM pessoa', function (err, result) {
     if (err) {
       console.log(err);
       res.status(400).send(err);
     } else {
-      console.log('resultado>>>>>' + JSON.stringify(result.rows));
+      res.send(result.rows);
+    }
+  });
+};
+
+const add = (req, res) => {
+  const { nome, cpf, rg, telefone, rua, bairro, numero, cep, estado, cidade, pais } = {
+    nome: 'teste',
+    cpf: 'teste',
+    rg: 'teste',
+    telefone: 'teste',
+    rua: 'teste',
+    bairro: 'teste',
+    numero: 'tes',
+    cep: 'teste',
+    estado: 'te',
+    cidade: 'teste',
+    pais: 'teste',
+  }
+
+  req.dbconnection.query('INSERT INTO pessoa (nome, cpf, rg, telefone, rua, bairro, numero, cep, estado, cidade, pais) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)', [nome, cpf, rg, telefone, rua, bairro, numero, cep, estado, cidade, pais], function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err);
+    } else {
       res.send(result.rows);
     }
   });
 };
 
 module.exports = {
-  list,
+  list, add
 };
 
 // exports.add = function (req, res) {
